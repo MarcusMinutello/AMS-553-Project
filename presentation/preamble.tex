@@ -1,0 +1,44 @@
+% Shared styling for slides.tex and backup.tex.
+
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+
+\graphicspath{{figures/}{../results/figures/}}
+
+% ------------------------------------------------------------------ appearance
+\definecolor{navy}{RGB}{23,50,94}
+\definecolor{accent}{RGB}{31,119,180}
+\definecolor{good}{RGB}{44,160,44}
+\definecolor{warn}{RGB}{214,39,40}
+\definecolor{soft}{RGB}{240,244,250}
+\setbeamercolor{frametitle}{fg=navy}
+\setbeamercolor{title}{fg=navy}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{block title}{bg=navy,fg=white}
+\setbeamercolor{block body}{bg=soft}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{footline}{%
+  \hfill\usebeamercolor[fg]{structure}\scriptsize\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{0.6em}}
+\AtBeginSection[]{%
+  \begin{frame}[plain,noframenumbering]
+    \centering\vfill
+    {\Large\bfseries\color{navy}\insertsectionnumber.\ \insertsection}\par\vfill
+  \end{frame}}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\hl}[1]{\textcolor{accent}{\textbf{#1}}}
+\newcommand{\ucvar}{\operatorname{U\text{-}CVaR}}
+\newcommand{\bigstat}[2]{%
+  \begin{minipage}[t]{\linewidth}\centering
+    {\LARGE\bfseries\color{navy}#1}\par\vspace{0.3em}
+    {\footnotesize #2\par}
+  \end{minipage}}

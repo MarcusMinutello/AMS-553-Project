@@ -1,0 +1,11 @@
+# LaTeX build files (slides.pdf is kept)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
