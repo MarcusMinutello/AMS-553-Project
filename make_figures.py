@@ -1,7 +1,9 @@
 """Build presentation figures from results/ into results/figures/.
 
     python make_figures.py
+    DFS_RESULTS=results_nosharks python make_figures.py   # another results folder
 """
+import os
 from pathlib import Path
 
 import matplotlib
@@ -10,7 +12,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-RES = Path(__file__).parent / "results"
+RES = Path(__file__).parent / os.environ.get("DFS_RESULTS", "results")
 FIG = RES / "figures"
 
 # validated categorical order (dataviz reference palette, light mode)
@@ -188,6 +190,43 @@ def fig_results(summary):
     save(fig, "results_roi")
 
 
+def fig_results_vs_nosharks(summary, summary_ns):
+    """Finish rates with sharks (3 panels) plus P(top 0.1%) from the no-sharks run."""
+    rows = ["Field lineup (baseline)"] + STRAT_ORDER
+    s = summary.set_index("strategy").loc[rows]
+    ns = summary_ns.copy()
+    # the validated alpha differs between runs; map the no-sharks S2-CV row onto the main key
+    cv_key = next(k for k in STRAT_ORDER if k.startswith("S2-CV"))
+    ns["strategy"] = [cv_key if k.startswith("S2-CV") else k for k in ns["strategy"]]
+    ns = ns.set_index("strategy").loc[rows]
+    panels = [(s, "cash", "P(cash, top 20%)"), (s, "top1", "P(top 1%)"),
+              (s, "top01", "P(top 0.1%)"), (ns, "top01", "NO sharks: P(top 0.1%)")]
+    fig, axes = plt.subplots(1, 4, figsize=(16, 5.6), sharey=True)
+    labels = [SHORT[k] for k in rows]
+    for ax, (d, m, title) in zip(axes, panels):
+        for y, k in enumerate(rows):
+            v, lo, hi = d.loc[k, m] * 100, d.loc[k, m + "_lo"] * 100, d.loc[k, m + "_hi"] * 100
+            ax.plot([lo, hi], [y, y], color=COLOR[k], lw=2, solid_capstyle="round")
+            ax.plot(v, y, "o", ms=9, color=COLOR[k], mec=SURFACE, mew=2)
+            ax.text(hi, y + 0.25, f" {v:.2f}%", color=INK2, fontsize=10, va="bottom")
+        ax.axvline(d.loc["Field lineup (baseline)", m] * 100, color=GRAY, lw=1, ls=":")
+        ax.set_title(title)
+        ax.set_xlabel("% of contests (95% CI)")
+        ax.grid(axis="y", visible=False)
+        ax.set_xlim(left=0)
+    axes[3].set_facecolor("#f1f0ec")
+    xmax = 1.18 * max(axes[2].get_xlim()[1], axes[3].get_xlim()[1])
+    axes[2].set_xlim(0, xmax)
+    axes[3].set_xlim(0, xmax)
+    axes[0].set_yticks(range(len(labels)), labels)
+    axes[0].invert_yaxis()
+    fig.suptitle("Out-of-sample finish rates (2,000 contests, 95% CIs). "
+                 "White panels: field with 20% sharks. Shaded panel: no sharks.",
+                 x=0.01, ha="left", fontweight="bold", color=INK, fontsize=15)
+    fig.tight_layout()
+    save(fig, "results_finish_rates_vs_nosharks")
+
+
 def _strategy_groups(strategies):
     """Group strategies that picked the same lineup: [(pids, color_key, label)]."""
     out = {}
@@ -292,10 +331,13 @@ def fig_is_thresholds(th):
     fig, ax = plt.subplots(figsize=(7.5, 4.4))
     ax.plot(th["p_true"], th["variance_reduction_factor"], "-o", color=SERIES[0], lw=2, ms=9,
             mec=SURFACE, mew=2)
-    for _, r in th.iterrows():
+    for i, (_, r) in enumerate(th.iterrows()):
+        # the leftmost label sits right of its point so it can't run into the y-axis title
+        first = i == 0
         ax.annotate(f"score > {r['threshold']:.0f}: {r['variance_reduction_factor']:.0f}x",
                     (r["p_true"], r["variance_reduction_factor"]), textcoords="offset points",
-                    xytext=(-10, 10), color=INK, fontsize=10, ha="right")
+                    xytext=(12, -4) if first else (-10, 10), color=INK, fontsize=10,
+                    ha="left" if first else "right", va="center" if first else "baseline")
     ax.set_xscale("log")
     ax.set_yscale("log")
     from matplotlib.ticker import FixedLocator, FuncFormatter, NullLocator
@@ -323,6 +365,9 @@ def main():
     fig_field(np.load(RES / "field_scores_example.npy"), contests, slate)
     fig_ownership(slate)
     fig_results(pd.read_csv(RES / "summary.csv"))
+    ns = Path(__file__).parent / "results_nosharks" / "summary.csv"
+    if ns.exists() and RES.name == "results":
+        fig_results_vs_nosharks(pd.read_csv(RES / "summary.csv"), pd.read_csv(ns))
     fig_pool(pd.read_csv(RES / "pool_selection.csv"), pd.read_csv(RES / "strategies.csv"))
     fig_is(pd.read_csv(RES / "is_summary.csv"), pd.read_csv(RES / "is_tilt.csv"),
            pd.read_csv(RES / "is_reps.csv"))

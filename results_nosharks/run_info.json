@@ -1,0 +1,53 @@
+{
+  "config": {
+    "n_teams": 8,
+    "salary_cap": 50000,
+    "lineup_size": 9,
+    "n_opponents": 10000,
+    "stack_prob": 0.35,
+    "dirichlet_kappa": 200.0,
+    "salary_floor_frac": 0.98,
+    "own_beta_proj": 0.8,
+    "own_beta_salary": -0.8,
+    "shark_frac": 0.0,
+    "shark_pool_size": 800,
+    "shark_noise": 0.15,
+    "flex_pos_weights": {
+      "RB": 0.45,
+      "WR": 0.45,
+      "TE": 0.1
+    },
+    "entry_fee": 1.0,
+    "rake": 0.15,
+    "paid_frac": 0.2,
+    "min_cash": 2.0,
+    "first_place_frac": 0.1,
+    "ucvar_alpha": 0.99,
+    "n_gen_scenarios": 300,
+    "lambda_grid": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5
+    ],
+    "n_select_fields": 50,
+    "n_select_draws": 100,
+    "n_test_fields": 200,
+    "n_test_draws": 10,
+    "n_field_lineup_baseline": 200,
+    "seed_slate": 553,
+    "seed_gen": 1001,
+    "seed_select": 2002,
+    "seed_test": 3003,
+    "seed_is": 4004
+  },
+  "quick": false,
+  "shark_frac": 0.0,
+  "pool_size": 317,
+  "acceptance_rate": 0.09577614379084967,
+  "is_cutoff": 147.75425370923085,
+  "alpha_cv": 0.9
+}

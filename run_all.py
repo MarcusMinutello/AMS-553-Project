@@ -2,6 +2,7 @@
 
     python run_all.py            # full run (~5 min)
     python run_all.py --quick    # smoke test (~1 min)
+    python run_all.py --no-sharks --out results_nosharks   # field = paper's Algorithm 1 only
 
 Outputs go to results/: slate.csv, strategies.csv, contests.csv, field_baseline.csv,
 summary.csv, paired_tests.csv, pool_selection.csv, is_*.csv, run_info.json.
@@ -33,8 +34,13 @@ def log(msg, t0=[time.time()]):
     print(f"[{time.time() - t0[0]:6.1f}s] {msg}", flush=True)
 
 
-def main(quick: bool):
+def main(quick: bool, no_sharks: bool = False, out: str | None = None):
+    global OUT
+    if out:
+        OUT = Path(__file__).parent / out
     cfg = Config()
+    if no_sharks:
+        cfg.shark_frac = 0.0
     if quick:
         cfg.n_gen_scenarios, cfg.n_select_fields, cfg.n_select_draws = 60, 10, 50
         cfg.n_test_fields, cfg.n_test_draws, cfg.n_field_lineup_baseline = 20, 10, 50
@@ -51,8 +57,11 @@ def main(quick: bool):
     log(f"slate: {len(slate)} players, min eig(R) = {np.linalg.eigvalsh(R).min():.3f}")
 
     # sharks for the generation/selection stages (test stage gets its own pool below)
-    fm.build_shark_pool(milp, np.random.default_rng(cfg.seed_select + 1))
-    log(f"shark pool (selection): {len(np.unique(fm.shark_pool, axis=0))} unique lineups")
+    if cfg.shark_frac > 0:
+        fm.build_shark_pool(milp, np.random.default_rng(cfg.seed_select + 1))
+        log(f"shark pool (selection): {len(np.unique(fm.shark_pool, axis=0))} unique lineups")
+    else:
+        log("no sharks: field is the paper's Algorithm 1 only")
 
     # pilot field -> expected ownership (used only to generate contrarian candidates)
     pilot, _ = fm.generate(np.random.default_rng(cfg.seed_gen + 7))
@@ -156,8 +165,9 @@ def main(quick: bool):
 
     # ---------------- 5. out-of-sample contests ----------------
     rng_test = np.random.default_rng(cfg.seed_test)
-    fm.build_shark_pool(milp, np.random.default_rng(cfg.seed_test + 1))
-    log("shark pool (test) rebuilt with a fresh seed")
+    if cfg.shark_frac > 0:
+        fm.build_shark_pool(milp, np.random.default_rng(cfg.seed_test + 1))
+        log("shark pool (test) rebuilt with a fresh seed")
     # evaluate the named strategies AND every pool candidate on the same contests (CRN)
     all_strats = dict(strategies)
     all_strats.update({f"pool_{i:03d}": l for i, l in enumerate(pool)})
@@ -212,7 +222,7 @@ def main(quick: bool):
 
     json.dump({"config": {k: (v if not isinstance(v, tuple) else list(v))
                           for k, v in cfg.__dict__.items()},
-               "quick": quick, "pool_size": int(len(pool)),
+               "quick": quick, "shark_frac": cfg.shark_frac, "pool_size": int(len(pool)),
                "acceptance_rate": float(fm.acceptance_rate),
                "is_cutoff": c, "alpha_cv": alpha_cv}, open(OUT / "run_info.json", "w"), indent=2)
     log("done")
@@ -221,4 +231,7 @@ def main(quick: bool):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
-    main(ap.parse_args().quick)
+    ap.add_argument("--no-sharks", action="store_true", help="opponent field without optimizer sharks")
+    ap.add_argument("--out", default=None, help="output folder (default: results)")
+    a = ap.parse_args()
+    main(a.quick, a.no_sharks, a.out)
