@@ -2,17 +2,9 @@
 
 Slide numbers match the bottom-right corner of the slides (x / 11). The section-divider slides ("1. The problem", "2. The Papers Approach", "3. Our approach") have no number; click through them without stopping.
 
-Each slide lists a target time, a running clock, who presents it, the main ideas, and an example of what to say. **[Brackets]** mark where to point on the slide. Hand-offs are marked **(hand-off)**.
+Each slide lists a target time, a running clock, the main ideas, and an example of what to say. **[Brackets]** mark where to point on the slide.
 
 The examples total about 1,350 words, roughly **10–11 minutes** with pauses and pointing (the clock below assumes an unhurried pace). That leaves at least a minute of slack in our 12. This deck has no results slides, so the script spends its time explaining the method clearly. Rehearse with the examples, then speak from the main ideas on the day.
-
-**Split** (change it freely):
-
-| Presenter | Slides | Time |
-|---|---|---|
-| Marcus | 1–4, then 10–11 | about 3:55 |
-| Benjamin | 5–6 | about 3:00 |
-| Alex | 7–9 | about 3:50 |
 
 **If you're running long**, cut these (about 45 seconds in total):
 - the stacking example on slide 4
@@ -23,7 +15,13 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ## Check before presenting
 
-- **Slide 3's figures are unverified.** Check the 30% to first place and the $1 million prize against a current Millionaire Maker payout table, or say "around" when you quote them.
+- **Slide 3's figures have been checked.**
+  - **100,000+ entries: correct.** Week 9 of 2025 had 161,764 entries and Week 15 had 147,058.
+  - **$1 million to first: correct.** The 2025 contests were titled "$2.75M (or $2.5M) Fantasy Football Millionaire [$1M to 1st]".
+  - **−15% rake: correct.** At the usual $20 entry, Week 9 took in about $3.24M for a $2.75M pool, which is a 15% cut.
+  - **Top 20% cash: replaces the old "30% to the winner" box.** The winner's share depends on the size of the pool (about 17% to 40%), so no single number was safe. About 20% of entries cashing is typical, and it's also what our simulator uses.
+  - **The payout-structure line comes from a DFS blog** ([DFS Degen, 2026](https://dfsdegen.com/blog/dfs-millionaire-maker-strategy)), not from DraftKings. Its "~17% to the winner" fits a prize pool of about $6M. In the 2025 contests ($2.5M–$2.75M pools), $1M was 36–40%. If asked, say the share depends on the size of the pool.
+  - The PDF was edited directly, because its LaTeX source isn't in the repo. **If the deck is rebuilt from source (e.g. Overleaf), make the same change there.**
 - **Our runs are smaller than the slides.**
   - Slides 6 and 9 say 100,000 opponents and 100 candidates.
   - Our runs so far used 10,000 opponents and about 320 candidates.
@@ -34,17 +32,17 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 1: Title (0:20, clock 0:20), Marcus
+## Slide 1: Title (0:20, clock 0:20)
 
 **Main ideas**
 - Who we are; the topic in one sentence.
 
 **What to say**
-> Hi, we're Marcus, Benjamin and Alex. Our project is about Daily Fantasy Sports contests with a hundred thousand entries, where only the very best lineups make real money. We use simulation to build lineups for the best-case scenarios instead of the average one.
+> Hi everyone. Our project is about Daily Fantasy Sports contests with a hundred thousand entries, where only the very best lineups make real money. We use simulation to build lineups for the best-case scenarios instead of the average one.
 
 ---
 
-## Slide 2: Outline (0:25, clock 0:45), Marcus
+## Slide 2: Outline (0:25, clock 0:45)
 
 **Main ideas**
 - Three parts: the problem, the paper's approach, our extensions.
@@ -54,22 +52,23 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 3: Large-field DFS (1:00, clock 1:45), Marcus
+## Slide 3: Large-field DFS (1:00, clock 1:45)
 
 **Main ideas**
 - The format: 9 players, $50,000 salary cap, salaries track expected points.
-- 100,000+ entries; first place takes about 30% of the pool, about $1 million.
+- 100,000+ entries (about 150,000 in 2025).
+- Only the top ~20% of entries cash, and first place alone takes $1 million.
 - The 15% rake: the average entry loses money.
-- Payouts are top-heavy.
+- Payouts are top-heavy: roughly two-thirds of the pool goes to the top 100 finishers.
 
 **What to say**
 > Quick background. In DraftKings' NFL Millionaire Maker, you pick nine real NFL players: a quarterback, two running backs, three receivers, a tight end, a flex and a defense. You have a fifty-thousand-dollar salary cap, and players who are expected to score more cost more, so you can't just take the best player at every position. Your score is their real fantasy points that weekend.
 >
-> **[numbers]** These contests draw over a hundred thousand entries every week. First place alone takes around thirty percent of the prize pool, about a million dollars, and that's roughly the top thousandth of a percent of entries. Meanwhile the house keeps fifteen percent of every entry fee, so the average entry loses fifteen cents on the dollar. **[bottom line]** The payouts are extremely top-heavy. To win big, you need an exceptional week.
+> **[numbers]** These contests draw over a hundred thousand entries every week; last season it was around a hundred and fifty thousand. About one in five entries cashes, but first place alone takes a million dollars, and that goes to one entry out of all of them. Meanwhile the house keeps fifteen percent of every entry fee, so the average entry loses fifteen cents on the dollar. **[bottom lines]** The payouts are extremely top-heavy: roughly two-thirds of the prize pool goes to the top hundred finishers, out of well over a hundred thousand. To win big, you need an exceptional week.
 
 ---
 
-## Slide 4: Maximizing expected points is not optimal (1:15, clock 3:00), Marcus
+## Slide 4: Maximizing expected points is not optimal (1:15, clock 3:00)
 
 **Main ideas**
 - You need a boom: the expected-points lineup usually lands short of where the money is.
@@ -84,11 +83,11 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 >
 > **[right box]** And the bar is set by everyone else. If a popular player has a huge game, most of the field goes up with him and you gain nothing. If a player almost nobody picked has a huge game, only you go up. So who everyone else picks matters as much as who you pick.
 >
-> **[blue box]** That leads to our question: can a lineup chosen for its upper-tail average relative to the field, its Upside CVaR, beat a typical entry by a statistically significant margin? Benjamin will walk through the paper we build on. **(hand-off)**
+> **[blue box]** That leads to our question: can a lineup chosen for its upper-tail average relative to the field, its Upside CVaR, beat a typical entry by a statistically significant margin?
 
 ---
 
-## Slide 5: Building on Haugh & Singal (2019) (1:45, clock 4:45), Benjamin
+## Slide 5: Building on Haugh & Singal (2019) (1:45, clock 4:45)
 
 **Main ideas**
 - Their key idea: model the opponents, not just the players.
@@ -107,7 +106,7 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 6: Three simulation stages (1:15, clock 6:00), Benjamin
+## Slide 6: Three simulation stages (1:15, clock 6:00)
 
 **Main ideas**
 - Stage 1: player outcomes, correlated by position, sampled with crude Monte Carlo.
@@ -118,11 +117,11 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 **What to say**
 > Here's that method as a pipeline. **[box 1]** Stage one simulates player outcomes. In our implementation that's 80 players, with correlations by position, like a quarterback and his receivers, sampled with ordinary Monte Carlo. **[box 2]** Stage two builds the opponent field using the ownership model I just described, aiming at the size of a real contest: a hundred thousand opponents. **[bottom box]** The selection step combines the two. It generates candidate lineups with mean–variance and simulates contests to find the best one. **[box 3]** Stage three tests that chosen lineup on brand-new contests it has never seen.
 >
-> That last step matters. If you choose the best of a hundred candidates using noisy estimates, you tend to choose the one that got lucky, so its estimate is biased upward. Testing on fresh contests gives an honest measure of how good the choice really is. Alex will explain what we change. **(hand-off)**
+> That last step matters. If you choose the best of a hundred candidates using noisy estimates, you tend to choose the one that got lucky, so its estimate is biased upward. Testing on fresh contests gives an honest measure of how good the choice really is. Next, what we change.
 
 ---
 
-## Slide 7: Our changes (1:30, clock 7:30), Alex
+## Slide 7: Our changes (1:30, clock 7:30)
 
 **Main ideas**
 - 1. Mean–CVaR instead of mean–variance for candidates. Upside CVaR = the average of the best (1 − α) share of outcomes, measured against the field.
@@ -138,7 +137,7 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 8: Why skewness matters for candidate selection (1:10, clock 8:40), Alex
+## Slide 8: Why skewness matters for candidate selection (1:10, clock 8:40)
 
 **Main ideas**
 - The paper assumes multivariate normal scores, which justifies mean–variance.
@@ -153,7 +152,7 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 9: Updated simulation stages (1:10, clock 9:50), Alex
+## Slide 9: Updated simulation stages (1:10, clock 9:50)
 
 **Main ideas**
 - Same pipeline, two boxes changed: Stage 1 uses importance sampling; candidates come from mean–CVaR.
@@ -163,11 +162,11 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 **What to say**
 > Here's the pipeline with our changes. **[box 1]** Player outcomes are now skewed and sampled with importance sampling. **[bottom box]** Candidates come from mean–CVaR instead of mean–variance. **[box 2]** The opponent field is exactly the paper's. We kept that the same on purpose, so any difference in results comes from our changes and not from a different field.
 >
-> **[box 3]** For evaluation, every lineup (ours, the paper's mean–variance pick, and the simple max-projection lineup) plays the same set of new contests, with the same random draws. That makes it a paired comparison, which takes out a lot of noise, and we test whether the difference in payout is statistically significant. We'll also run everything with normal and with skewed player scores, to see whether the skew changes which lineup wins. Marcus will wrap up. **(hand-off)**
+> **[box 3]** For evaluation, every lineup (ours, the paper's mean–variance pick, and the simple max-projection lineup) plays the same set of new contests, with the same random draws. That makes it a paired comparison, which takes out a lot of noise, and we test whether the difference in payout is statistically significant. We'll also run everything with normal and with skewed player scores, to see whether the skew changes which lineup wins.
 
 ---
 
-## Slide 10: Summary (0:50, clock 10:40), Marcus
+## Slide 10: Summary (0:50, clock 10:40)
 
 **Main ideas**
 - Read the four bullets briefly.
@@ -183,7 +182,7 @@ The examples total about 1,350 words, roughly **10–11 minutes** with pauses an
 
 ---
 
-## Slide 11: Questions (0:05, clock 10:45), Marcus
+## Slide 11: Questions (0:05, clock 10:45)
 
 **What to say**
 > Thank you, we're happy to take questions.
