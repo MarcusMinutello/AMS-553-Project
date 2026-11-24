@@ -4,7 +4,7 @@ Slide numbers match the bottom-right corner of the slides (x / 11). The section-
 
 Each slide lists a target time, a running clock, who presents it, the main ideas, and an example of what to say. **[Brackets]** mark where to point on the slide. Hand-offs are marked **(hand-off)**.
 
-The examples total about 1,500 words, roughly **10.5–11 minutes** at a normal pace. That leaves about a minute of slack in our 12. This deck has no results slides, so the script spends its time explaining the method clearly. Rehearse with the examples, then speak from the main ideas on the day.
+The examples total about 1,350 words, roughly **10–11 minutes** with pauses and pointing (the clock below assumes an unhurried pace). That leaves at least a minute of slack in our 12. This deck has no results slides, so the script spends its time explaining the method clearly. Rehearse with the examples, then speak from the main ideas on the day.
 
 **Split** (change it freely):
 
